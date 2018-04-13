@@ -1732,6 +1732,9 @@ int (*socket_sendmsg_always)(struct socket *sock, struct msghdr *msg,
 int (*socket_recvmsg_always)(struct socket *sock, struct msghdr *msg,
 				int size, int flags);
 #endif /* CONFIG_SECURITY_FLOW_FRIENDLY */
+#ifdef CONFIG_SECURITY_BLOCKING_FLOW
+int (*socket_accept_before_return)(struct socket *sock, struct socket *newsock);
+#endif /* CONFIG_SECURITY_BLOCKING_FLOW */
 #ifdef CONFIG_BPF_SYSCALL
 	int (*bpf)(int cmd, union bpf_attr *attr,
 				 unsigned int size);
@@ -1970,6 +1973,9 @@ struct security_hook_heads {
 	struct list_head socket_sendmsg_always;
 	struct list_head socket_recvmsg_always;
 #endif /* CONFIG_SECURITY_FLOW_FRIENDLY */
+#ifdef CONFIG_SECURITY_BLOCKING_FLOW
+  struct list_head socket_accept_before_return;
+#endif /* CONFIG_SECURITY_BLOCKING_FLOW */
 #ifdef CONFIG_BPF_SYSCALL
 	struct list_head bpf;
 	struct list_head bpf_map;

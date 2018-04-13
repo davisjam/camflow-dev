@@ -239,6 +239,12 @@ config SECURITY_FLOW_FRIENDLY
 		information flow are not captured by LSM as it was designed for access
 		control.
 
+config SECURITY_BLOCKING_FLOW
+	bool "Security hooks to handle information flow on blocking IO."
+	default y
+	help
+		This option adds hooks to support information flow on blocking IO.
+
 source security/selinux/Kconfig
 source security/smack/Kconfig
 source security/tomoyo/Kconfig

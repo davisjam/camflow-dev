@@ -1411,7 +1411,11 @@ static int provenance_socket_listen(struct socket *sock, int backlog)
  * @newsock contains the newly created server socket for connection.
  * Return 0 if permission is granted.
  */
+#ifdef CONFIG_SECURITY_BLOCKING_FLOW
+static int provenance_socket_accept_before_return(struct socket *sock, struct socket *newsock)
+#else
 static int provenance_socket_accept(struct socket *sock, struct socket *newsock)
+#endif
 {
 	struct provenance *cprov = get_cred_provenance();
 	struct provenance *tprov = get_task_provenance();
@@ -1817,7 +1821,6 @@ static struct security_hook_list provenance_hooks[] __lsm_ro_after_init = {
 	LSM_HOOK_INIT(socket_bind,			    provenance_socket_bind),
 	LSM_HOOK_INIT(socket_connect,			    provenance_socket_connect),
 	LSM_HOOK_INIT(socket_listen,			    provenance_socket_listen),
-	LSM_HOOK_INIT(socket_accept,			    provenance_socket_accept),
 #ifdef CONFIG_SECURITY_FLOW_FRIENDLY
 	LSM_HOOK_INIT(socket_sendmsg_always,		    provenance_socket_sendmsg_always),
 	LSM_HOOK_INIT(socket_recvmsg_always,		    provenance_socket_recvmsg_always),
@@ -1827,6 +1830,11 @@ static struct security_hook_list provenance_hooks[] __lsm_ro_after_init = {
 	LSM_HOOK_INIT(socket_sendmsg,			    provenance_socket_sendmsg),
 	LSM_HOOK_INIT(socket_recvmsg,			    provenance_socket_recvmsg),
 #endif  /* CONFIG_SECURITY_FLOW_FRIENDLY */
+#ifdef CONFIG_SECURITY_BLOCKING_FLOW
+	LSM_HOOK_INIT(socket_accept_before_return, provenance_socket_accept_before_return),
+#else
+	LSM_HOOK_INIT(socket_accept, provenance_socket_accept),
+#endif
 	LSM_HOOK_INIT(socket_sock_rcv_skb,		    provenance_socket_sock_rcv_skb),
 	LSM_HOOK_INIT(unix_stream_connect,		    provenance_unix_stream_connect),
 	LSM_HOOK_INIT(unix_may_send,			    provenance_unix_may_send),

@@ -1752,6 +1752,13 @@ int security_socket_recvmsg_always(struct socket *sock, struct msghdr *msg,
 }
 #endif /* CONFIG_SECURITY_FLOW_FRIENDLY */
 
+#ifdef CONFIG_SECURITY_BLOCKING_FLOW
+int security_socket_accept_before_return(struct socket *sock, struct socket *newsock)
+{
+	return call_int_hook(socket_accept_before_return, 0, sock, newsock);
+}
+#endif /* CONFIG_SECURITY_BLOCKING_FLOW */
+
 #ifdef CONFIG_BPF_SYSCALL
 int security_bpf(int cmd, union bpf_attr *attr, unsigned int size)
 {
