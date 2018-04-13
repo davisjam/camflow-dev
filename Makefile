@@ -12,19 +12,12 @@ prepare: prepare_kernel prepare_us
 
 prepare_kernel:
 	mkdir -p build
-	cd ./build && git clone -b v$(kernel-version) --single-branch git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
-	cd ./build/linux-stable && $(MAKE) mrproper
-	cd ./build && mkdir -p pristine
-	cd ./build && cp -r ./linux-stable ./pristine
-	cd ./build/linux-stable && sed -i -e "s/EXTRAVERSION =/EXTRAVERSION = camflow$(lsm-version)/g" Makefile
-	cd ./build && git clone https://github.com/CamFlow/information-flow-patch.git
-	cd ./build/information-flow-patch && git checkout $(kernel-version)
-	cd ./build/information-flow-patch && mkdir -p ./build/linux-stable
-	cd ./build && cp -fa ./linux-stable/* ./information-flow-patch/build/linux-stable/
-	cd ./build/information-flow-patch && mkdir -p ./build/pristine/linux-stable/
-	cd ./build && cp -fa ./linux-stable/* ./information-flow-patch/build/pristine/linux-stable/
-	cd ./build/information-flow-patch && $(MAKE) patch
-	cd ./build/linux-stable && patch -p2 < ../information-flow-patch/output/patch-$(kernel-version)-flow-friendly
+	cd ./build && git clone https://github.com/CamFlow/blocking-patch.git
+	cd ./build/blocking-patch && $(MAKE) prepare_kernel
+	cd ./build/blocking-patch/build && mv ./linux-stable ../../linux-stable
+	cd ./build/blocking-patch/build && mv ./pristine ../../pristine
+	cd ./build && rm -rf ./blocking-patch
+	$(MAKE) copy_change
 
 prepare_provenance:
 	mkdir -p build
