@@ -14,10 +14,10 @@ prepare_kernel:
 	mkdir -p build
 	cd ./build && git clone https://github.com/CamFlow/blocking-patch.git
 	cd ./build/blocking-patch && $(MAKE) prepare_kernel
+	cd ./build/blocking-patch && $(MAKE) copy_change
 	cd ./build/blocking-patch/build && mv ./linux-stable ../../linux-stable
 	cd ./build/blocking-patch/build && mv ./pristine ../../pristine
 	cd ./build && rm -rf ./blocking-patch
-	$(MAKE) copy_change
 
 prepare_provenance:
 	mkdir -p build
